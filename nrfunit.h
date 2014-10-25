@@ -18,7 +18,7 @@
 #define NU_PRINTF(f, s) printf(f, s)
 #endif
 
-#if NU_CONTINUE_ON_FAILURE
+#if NRFUNIT_CONTINUE_ON_FAILURE
 #define NU_RETURN(ret) do { NU_PRINTF("%s\n\r", ret); ++asserts_failed; } while(0)
 #else
 #define NU_RETURN(ret) return ret
@@ -50,10 +50,14 @@ extern unsigned test_suites_run;
 extern unsigned tests_run;
 extern unsigned asserts_run;
 
-#if NU_CONTINUE_ON_FAILURE
+#if NRFUNIT_CONTINUE_ON_FAILURE
 extern unsigned asserts_failed;
 #endif
 
-const char *all_tests();
+extern const char *all_tests();
+
+void nrfunit_init();
+
+void nrfunit_main_loop();
 
 #endif // NRFUNIT_H

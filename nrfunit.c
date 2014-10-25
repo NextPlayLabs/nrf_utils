@@ -1,17 +1,16 @@
 
-#include "log4nrf.h"
+#include <stdbool.h>
+#include "nrf.h"
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
 #include "boards.h"
-#include "app_button.h"
 #include "nrfunit.h"
-#include "nrf_test_support.h"
 
 // Support for running nrfunit tests on the NRF51822 device.
 // To use this, call nrf_nrfunit_init() at the beggining
-// of your main. It will initialize JLink logging, grab LED_0 
-// and  LED_1 for it's own use, and initialize button inputs.  
-// It will not initialize or start anything else on the device.
+// of your main. It will grab LED_0  and LED_1 for it's own use, 
+// and initialize button inputs. It will not initialize or start 
+// anything else on the device.
 //
 // Next, do any other initialization, then call 
 // nrf_nrfunit_main_loop(), which will never return.
@@ -31,10 +30,7 @@ unsigned tests_run;
 unsigned asserts_run;
 unsigned asserts_failed;
 
-void init_nrfunit() {
-
-    // Initialize logging.
-    log4nrf_init();
+void nrfunit_init() {
 
     // Configure LED-pins as outputs
     nrf_gpio_cfg_output(LED_0);
@@ -89,7 +85,7 @@ void nrfunit_main_loop() {
 
         // Print a summary of the results.
 
-#if NU_CONTINUE_ON_FAILURE
+#if NRFUNIT_CONTINUE_ON_FAILURE
         if (asserts_failed) {
             printf("%u of %u asserts failed in %u tests and %u test suites.\n", asserts_failed, asserts_run, tests_run, test_suites_run);
         } else {
