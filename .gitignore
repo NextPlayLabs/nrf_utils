@@ -30,3 +30,6 @@
 
 # Backups
 *~
+
+# NRF build dir
+_build
