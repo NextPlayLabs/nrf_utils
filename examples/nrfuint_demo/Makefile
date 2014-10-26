@@ -1,22 +1,38 @@
+#
+# Copyright (c) 2014 Next Play Labs, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 TARGET_CHIP := NRF51822_QFAA_CA
 
 #BOARD := BOARD_PCA10000
 BOARD := BOARD_PCA10001
 
 # These are files that contain the test suites. They will
-# be compiled for both 
+# be compiled for both
 TEST_C_SOURCE_FILES += ts_example_basic.c ts_example_another.c
 TEST_C_SOURCE_FILES += all_tests.c
 
-# These are files that will only be compiled when we are 
+# These are files that will only be compiled when we are
 # doing local testing on the host.
 HOST_TEST_C_SOURCE_FILES += host_main.c
 
 # These are files that will only be compiled when we are
 # building tests to run on the device.
-DEVICE_TEST_C_SOURCE_FILES += device_main.c 
-DEVICE_TEST_C_SOURCE_FILES += nrfunit_device.c 
-DEVICE_TEST_C_SOURCE_FILES += nrf_delay.c 
+DEVICE_TEST_C_SOURCE_FILES += device_main.c
+DEVICE_TEST_C_SOURCE_FILES += nrfunit_device.c
+DEVICE_TEST_C_SOURCE_FILES += nrf_delay.c
 
 # On the device, we need to compile and link all but the
 # host code. To do this, we put them all in C_SOURCE_FILES

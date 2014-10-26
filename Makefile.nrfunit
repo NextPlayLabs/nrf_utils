@@ -1,14 +1,28 @@
-
+#
+# Copyright (c) 2014 Next Play Labs, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
 ifdef HOST_TESTING
 
 .PHONY: host_tests
 
 HOST_CC = gcc
-HOST_CFLAGS = -std=c99 -g -Wall -Werror 
+HOST_CFLAGS = -std=c99 -g -Wall -Werror
 HOST_CPPFLAGS = -I./test -I. -I$(NRFUNIT_DIR) -DNRFUNIT_CONTINUE_ON_FAILURE -DHOST_TESTING
 
-HOST_TEST_OBJS_1 = $(TEST_C_SOURCE_FILES:$(TESTSRCDIR)/%.c=$(HOST_OBJDIR)/%.o) $(HOST_TEST_C_SOURCE_FILES:$(TESTSRCDIR)/%.c=$(HOST_OBJDIR)/%.o)  
+HOST_TEST_OBJS_1 = $(TEST_C_SOURCE_FILES:$(TESTSRCDIR)/%.c=$(HOST_OBJDIR)/%.o) $(HOST_TEST_C_SOURCE_FILES:$(TESTSRCDIR)/%.c=$(HOST_OBJDIR)/%.o)
 HOST_TEST_OBJS = $(HOST_TEST_OBJS_1:%.c=$(HOST_OBJDIR)/%.o)
 HOST_TEST_BIN_NAME = $(TEST_BIN_NAME)
 
@@ -20,7 +34,7 @@ HOST_TEST_BIN = $(HOST_BINDIR)/$(HOST_TEST_BIN_NAME)
 HOST_LDLIBS += -lm
 
 HOST_COMPILE.c = $(HOST_CC) $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(HOST_TARGET_ARCH) -c
-HOST_LINK.c    = $(HOST_CC) $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(HOST_LDFLAGS) $(HOST_TARGET_ARCH) 
+HOST_LINK.c    = $(HOST_CC) $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(HOST_LDFLAGS) $(HOST_TARGET_ARCH)
 
 MKDIR=mkdir -p
 
