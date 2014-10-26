@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,11 +35,11 @@
 // preprocessor, not the compiler.
 //
 // In C code, include this header with
-// 
+//
 // #include "log4nrf.h"
 //
 // In your main, initialize logging before you do anything else, using
-// 
+//
 // int main(void)
 // {
 //     // Logging.
@@ -47,8 +47,8 @@
 //     ...
 // }
 //
-// 
-// Now, anywhere else in your code, log (or don't depending on the level) 
+//
+// Now, anywhere else in your code, log (or don't depending on the level)
 // using printf-style formatting with one of the following:
 //
 // LOG_FATAL(format, ...);
@@ -58,54 +58,54 @@
 // LOG_DEBUG(format, ...);
 // LOG_TRACE(format, ...);
 //
-// File name, line number, and log level will automatically be prepended, and 
+// File name, line number, and log level will automatically be prepended, and
 // "\r\n" will automatically be appended so you don't have to worry about it.
 //
 // Now suppose your code looks like:
-// 
+//
 // LOG_DEBUG("value = %d", value);
 // if(value < 0) {
 //     LOG_WARN("unexpected negative value %d", value);
 // }
 //
-// and at runtime value = -2. Then if you compile with -DLOG_LEVEL=LOG_LEVEL_WARN, 
+// and at runtime value = -2. Then if you compile with -DLOG_LEVEL=LOG_LEVEL_WARN,
 // then your output will be
 //
 //     foo.c:42: WARN: unexpected negative value -2
-//  
+//
 // whereas if you compile with -DLOG_LEVEL=LOG_LEVEL_DEBUG you will get the output
 //
 //     foo.c:40: DEBUG: value = -2
 //     foo.c:42: WARN: unexpected negative value -2
-// 
-// The difference between the two is that setting the log level to LOG_LEVEL_DEBUG 
-// allowed debug log messages, and all higher levels, like warn, error, and fatal, 
-// to go through. Setting it to LOG_LEVEL_WARN lets WARN and higher through. Since 
+//
+// The difference between the two is that setting the log level to LOG_LEVEL_DEBUG
+// allowed debug log messages, and all higher levels, like warn, error, and fatal,
+// to go through. Setting it to LOG_LEVEL_WARN lets WARN and higher through. Since
 // DEBUG is not as severe at WARN, it is removed from the code and never executes.
 //
-// Of course, if the value is 4 at runtime, then with -DLOG_LEVEL=LOG_LEVEL_DEBUG 
+// Of course, if the value is 4 at runtime, then with -DLOG_LEVEL=LOG_LEVEL_DEBUG
 // you will get
 //
 //     foo.c:40: DEBUG: value = 4
 //
-// whereas with -DLOG_LEVEL=LOG_LEVEL_WARN you will get nothing in the log because 
+// whereas with -DLOG_LEVEL=LOG_LEVEL_WARN you will get nothing in the log because
 // the LOG_DEBUG will be disabled entirely.
 //
-// Having multiple levels is really useful. For example, for app error handling, we 
+// Having multiple levels is really useful. For example, for app error handling, we
 // have a function like
 //
 //     void app_error_handler(uint32_terror_code, uint32_t line_num, const uint8_t * p_file_name) {
 //
 //         // Log the details of this fatal error before we reset the system.
-//         LOG_FATAL("App error originally at %s:%u: error_code = 0x%08x", 
+//         LOG_FATAL("App error originally at %s:%u: error_code = 0x%08x",
 //                   (char *)p_file_name, (unsigned)line_num, (unsigned)error_code);
 //
 //         NVIC_SystemReset();
 //     }
 //
-// Even if we turn off all the other levels of logging by setting 
-// -DLOG_LEVEL=LOG_LEVEL_FATAL, so that we get no debug, info, warnings, etc... from 
-// the rest of our code, we will get a nice readable message in the log whenever we 
+// Even if we turn off all the other levels of logging by setting
+// -DLOG_LEVEL=LOG_LEVEL_FATAL, so that we get no debug, info, warnings, etc... from
+// the rest of our code, we will get a nice readable message in the log whenever we
 // hit this code.
 //
 

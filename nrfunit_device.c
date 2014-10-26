@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2014 Next Play Labs, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 #include <stdbool.h>
 #include "nrf.h"
@@ -9,21 +24,21 @@
 
 // Support for running nrfunit tests on the NRF51822 device.
 // To use this, call nrf_nrfunit_init() at the beggining
-// of your main. It will grab LED_0  and LED_1 for it's own use, 
-// and initialize button inputs. It will not initialize or start 
+// of your main. It will grab LED_0  and LED_1 for it's own use,
+// and initialize button inputs. It will not initialize or start
 // anything else on the device.
 //
-// Next, do any other initialization, then call 
+// Next, do any other initialization, then call
 // nrf_nrfunit_main_loop(), which will never return.
 //
 // To invoke your actual tests, link in a function
-// 
+//
 //     const char *all_tests()
 //
 // of your own, which nrf_nrfunit_main_loop() will call.
 
 
-// We begin by defining the counters that keep track of how many 
+// We begin by defining the counters that keep track of how many
 // tests we have run. These were declared in nrfunit.h so they
 // are known to all test files.
 unsigned test_suites_run;
@@ -118,14 +133,14 @@ void nrfunit_device_main_loop() {
 
                 nrf_gpio_pin_clear(LED_1);
                 nrf_gpio_pin_set(LED_0);
-    
+
                 nrf_delay_ms(200);
-    
+
                 button_pushed |= nrf_gpio_pin_read(BUTTON_0);
 
                 nrf_gpio_pin_clear(LED_0);
                 nrf_gpio_pin_set(LED_1);
-    
+
                 nrf_delay_ms(200);
 
                 button_pushed |= nrf_gpio_pin_read(BUTTON_0);
@@ -133,7 +148,7 @@ void nrfunit_device_main_loop() {
 
             nrf_gpio_pin_clear(LED_0);
             nrf_gpio_pin_clear(LED_1);
-            
+
             // Wait for the button to be released.
             while(button_pushed) {
                 button_pushed = nrf_gpio_pin_read(BUTTON_0);
