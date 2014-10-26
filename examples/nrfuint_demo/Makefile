@@ -10,11 +10,12 @@ TEST_C_SOURCE_FILES += all_tests.c
 
 # These are files that will only be compiled when we are 
 # doing local testing on the host.
-HOST_TEST_C_SOURCE_FILES += nrfunit_host_main.c
+HOST_TEST_C_SOURCE_FILES += host_main.c
 
 # These are files that will only be compiled when we are
 # building tests to run on the device.
-DEVICE_TEST_C_SOURCE_FILES += nrfunit_device_main.c nrfunit.c 
+DEVICE_TEST_C_SOURCE_FILES += device_main.c 
+DEVICE_TEST_C_SOURCE_FILES += nrfunit_device.c 
 DEVICE_TEST_C_SOURCE_FILES += nrf_delay.c 
 
 # On the device, we need to compile and link all but the

@@ -1,12 +1,12 @@
 
-#include "nrfunit.h"
+#include "nrfunit_device.h"
 
 int main(int argc, char **argv) {
 
-    nrfunit_init();
+    nrfunit_device_init();
 
     // Main loop runs the tests.
-    nrfunit_main_loop();
+    nrfunit_device_main_loop();
 
     return 0;
 }
