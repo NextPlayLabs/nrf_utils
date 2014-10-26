@@ -27,7 +27,6 @@ OUTPUT_FILENAME := nrfunit_demo
 TEST_BIN_NAME = example_test
 TESTSRCDIR = .
 
-
 SDK_PATH = ../../../../
 
 # Where is nrfunit? Since this is an example in nrfunit itself,
@@ -57,6 +56,10 @@ USE_SOFTDEVICE := S110
 
 LINKER_SCRIPT = gcc_$(DEVICESERIES)_s110_$(DEVICE_VARIANT).ld
 OUTPUT_FILENAME := $(OUTPUT_FILENAME)_s110_$(DEVICE_VARIANT)
+
+.PHONY: allall
+
+allall: all host_tests
 
 include $(SDK_PATH)Source/templates/gcc/Makefile.common
 
