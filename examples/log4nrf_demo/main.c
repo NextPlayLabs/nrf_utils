@@ -37,6 +37,8 @@ int main(int argc, char **argv) {
 
     log4nrf_init();
 
+    example_init();
+
     // Here is how to invoke logging at different levels.
     // Look in the Makefile and change the
     //
