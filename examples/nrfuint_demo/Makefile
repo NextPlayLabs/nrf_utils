@@ -34,6 +34,9 @@ DEVICE_TEST_C_SOURCE_FILES += device_main.c
 DEVICE_TEST_C_SOURCE_FILES += nrfunit_device.c
 DEVICE_TEST_C_SOURCE_FILES += nrf_delay.c
 
+DEVICE_TEST_C_SOURCE_FILES += log4nrf.c
+DEVICE_TEST_C_SOURCE_FILES += simple_uart.c
+
 # On the device, we need to compile and link all but the
 # host code. To do this, we put them all in C_SOURCE_FILES
 # and let Makefile.common take over from there.

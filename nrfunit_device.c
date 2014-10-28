@@ -21,6 +21,7 @@
 #include "boards.h"
 #include "nrfunit.h"
 #include "nrfunit_device.h"
+#include "log4nrf.h"
 
 // Support for running nrfunit tests on the NRF51822 device.
 // To use this, call nrf_nrfunit_init() at the beggining
@@ -47,6 +48,8 @@ unsigned asserts_run;
 unsigned asserts_failed;
 
 void nrfunit_device_init() {
+
+    log4nrf_init();
 
     // Configure LED-pins as outputs
     nrf_gpio_cfg_output(LED_0);
@@ -103,18 +106,18 @@ void nrfunit_device_main_loop() {
 
 #if NRFUNIT_CONTINUE_ON_FAILURE
         if (asserts_failed) {
-            printf("%u of %u asserts failed in %u tests and %u test suites.\n", asserts_failed, asserts_run, tests_run, test_suites_run);
+            printf("%u of %u asserts failed in %u tests and %u test suites.\n\r", asserts_failed, asserts_run, tests_run, test_suites_run);
         } else {
-            printf("%u asserts passed in %u tests and %u test suites.\n", asserts_run, tests_run, test_suites_run);
+            printf("%u asserts passed in %u tests and %u test suites.\n\r", asserts_run, tests_run, test_suites_run);
         }
 #else
         if (result != 0) {
-            printf("%s\n", result);
+            printf("%s\n\r", result);
         } else {
-            printf("ALL TESTS PASSED\n");
+            printf("ALL TESTS PASSED\n\r");
         }
 
-        printf("%u asserts run in %u tests and %u test suites.\n", asserts_run, tests_run, test_suites_run);
+        printf("%u asserts run in %u tests and %u test suites.\n\r", asserts_run, tests_run, test_suites_run);
 #endif
 
         if(asserts_failed || result != 0) {

@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-
+#include <stdio.h>
 #include "nrfunit_device.h"
 
 int main(int argc, char **argv) {
 
     nrfunit_device_init();
+
+    // Tell the user how it works.
+    printf("Press Button 0 to run the tests.\n\r\n\r");
 
     // Main loop runs the tests.
     nrfunit_device_main_loop();
