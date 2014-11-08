@@ -16,9 +16,19 @@
 
 #include "log4nrf.h"
 
+#include <stdio.h>
+
 #include "nrf_delay.h"
 #include "simple_uart.h"
 #include "boards.h"
+
+#ifdef __arm__
+int fputc(int ch, FILE * p_file) 
+{
+    simple_uart_put((uint8_t)ch);
+    return 0;
+}
+#endif /* __arm__ */
 
 int _write(int fd, char * str, int len)
 {

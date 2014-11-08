@@ -54,6 +54,9 @@ int main(int argc, char **argv) {
     // then you will see output from calls to LOG_INFO(), LOG_WARN(),
     // LOG_ERROR(), and LOG_FATAL(), but no output from LOG_DEBUG()
     // or LOG_TRACE(), which are less severe.
+    //
+    // (When Keil is used, open Target Options (Alt+F7) and go to the C/C++ tab.
+    // In the list of defines, change LOG_LEVEL to the desired level.)
 
     LOG_TRACE("Trace logging is on.");
     LOG_DEBUG("Debug logging is on.");

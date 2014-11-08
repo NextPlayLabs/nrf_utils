@@ -176,7 +176,7 @@
 // Call this function right at the start of your main() to initialize
 // the logging system so that logging is done via the SEGGER JLink.
 // Output is at 38400 baud.
-void log4nrf_init();
+void log4nrf_init(void);
 
 // Use this version if you would like to use specific pins other than
 // the default pins defined in boards.h

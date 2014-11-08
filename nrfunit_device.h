@@ -17,8 +17,8 @@
 #ifndef NRFUNIT_DEVICE_H
 #define NRFUNIT_DEVICE_H
 
-void nrfunit_device_init();
+void nrfunit_device_init(void);
 
-void nrfunit_device_main_loop();
+void nrfunit_device_main_loop(void);
 
 #endif
