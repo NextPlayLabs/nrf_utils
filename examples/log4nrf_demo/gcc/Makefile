@@ -19,40 +19,38 @@ TARGET_CHIP := NRF51822_QFAA_CA
 #BOARD := BOARD_PCA10000
 BOARD := BOARD_PCA10001
 
-# These are files that contain the test suites. They will
-# be compiled for both
-TEST_C_SOURCE_FILES += ts_example_basic.c ts_example_another.c
-TEST_C_SOURCE_FILES += all_tests.c
+# Choose the log level of your choice.
+#
+# The options are:
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_FATAL
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_ERROR
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_WARN
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_INFO
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_TRACE
+#
+# or if you want to completely disable logging, e.g. for a
+# production build,
+#
+#     CFLAGS += -DLOG_LEVEL=LOG_LEVEL_OFF
+#
+CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
 
-# These are files that will only be compiled when we are
-# doing local testing on the host.
-HOST_TEST_C_SOURCE_FILES += host_main.c
+C_SOURCE_FILES += main.c
+C_SOURCE_FILES += log4nrf.c
 
-# These are files that will only be compiled when we are
-# building tests to run on the device.
-DEVICE_TEST_C_SOURCE_FILES += device_main.c
-DEVICE_TEST_C_SOURCE_FILES += nrfunit_device.c
-DEVICE_TEST_C_SOURCE_FILES += nrf_delay.c
+C_SOURCE_FILES += simple_uart.c
+C_SOURCE_FILES += nrf_delay.c
 
-DEVICE_TEST_C_SOURCE_FILES += log4nrf.c
-DEVICE_TEST_C_SOURCE_FILES += simple_uart.c
+OUTPUT_FILENAME := log4nrf_demo
 
-# On the device, we need to compile and link all but the
-# host code. To do this, we put them all in C_SOURCE_FILES
-# and let Makefile.common take over from there.
-C_SOURCE_FILES += $(TEST_C_SOURCE_FILES) $(DEVICE_TEST_C_SOURCE_FILES)
+SDK_PATH = ../../../../../
 
-OUTPUT_FILENAME := nrfunit_demo
-TEST_BIN_NAME = example_test
-TESTSRCDIR = .
-
-SDK_PATH = ../../../../
-
-# Where is nrfunit? Since this is an example in nrfunit itself,
+# Where is log4nrf? Since this is an example in nrfunit itself,
 # it is right above us. In general it might be somewhere else.
-NRFUNIT_DIR = ../..
-C_SOURCE_PATHS += $(NRFUNIT_DIR)
-INCLUDEPATHS += -I"$(NRFUNIT_DIR)"
+LOG4NRF_DIR = ../../..
+C_SOURCE_PATHS += $(LOG4NRF_DIR)
+INCLUDEPATHS += -I"$(LOG4NRF_DIR)"
 
 INCLUDEPATHS += -I.
 
@@ -76,12 +74,4 @@ USE_SOFTDEVICE := S110
 LINKER_SCRIPT = gcc_$(DEVICESERIES)_s110_$(DEVICE_VARIANT).ld
 OUTPUT_FILENAME := $(OUTPUT_FILENAME)_s110_$(DEVICE_VARIANT)
 
-.PHONY: allall
-
-allall: all host_tests
-
 include $(SDK_PATH)Source/templates/gcc/Makefile.common
-
-HOST_TESTING = 1
-
-include $(NRFUNIT_DIR)/Makefile.nrfunit

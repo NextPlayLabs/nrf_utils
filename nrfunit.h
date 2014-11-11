@@ -67,10 +67,10 @@ extern unsigned asserts_run;
 extern unsigned asserts_failed;
 #endif
 
-extern const char *all_tests();
+extern const char *all_tests(void);
 
-void nrfunit_init();
+void nrfunit_init(void);
 
-void nrfunit_main_loop();
+void nrfunit_main_loop(void);
 
 #endif // NRFUNIT_H
