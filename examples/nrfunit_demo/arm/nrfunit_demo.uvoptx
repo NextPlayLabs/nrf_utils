@@ -146,7 +146,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfuint_demo\main.c</Filename>
+          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfunit_demo\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -162,7 +162,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfuint_demo\main.c</Filename>
+          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfunit_demo\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -318,7 +318,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfuint_demo\main.c</Filename>
+          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfunit_demo\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
@@ -334,7 +334,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>0</BreakIfRCount>
-          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfuint_demo\main.c</Filename>
+          <Filename>C:\tmp\nrf51_sdk_v6_1_0_b2ec2e6\Nordic Semiconductor\nRF51 SDK_v6.1.0.0\Nordic\nrf51822\Board\NextPlayLabs_nrf_utils\examples\nrfunit_demo\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
         </Bp>
