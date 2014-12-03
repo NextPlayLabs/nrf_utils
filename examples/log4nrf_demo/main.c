@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
+#include "nordic_common.h"
 #include "nrf.h"
 #include "nrf_delay.h"
 #include "nrf_gpio.h"
-#include "boards.h"
+#include "bsp.h"
 
 #include "log4nrf.h"
 
@@ -25,8 +26,8 @@
 void example_init() {
 
     // Configure LED-pins as outputs
-    nrf_gpio_cfg_output(LED_0);
-    nrf_gpio_cfg_output(LED_1);
+    nrf_gpio_cfg_output(BSP_LED_0);
+    nrf_gpio_cfg_output(BSP_LED_1);
 
     // Configure the buttons as inputs.
     nrf_gpio_range_cfg_input(BUTTON_START, BUTTON_STOP, BUTTON_PULL);
@@ -79,25 +80,25 @@ int main(int argc, char **argv) {
     while(true) {
 
         // Set one of the LEDs and clear the other.
-        nrf_gpio_pin_clear(LED_1);
-        nrf_gpio_pin_set(LED_0);
+        nrf_gpio_pin_clear(BSP_LED_1);
+        nrf_gpio_pin_set(BSP_LED_0);
 
         uint8_t button_pushed = 0;
 
         LOG_DEBUG("Waiting for the user to hit a button...");
 
         while(!button_pushed) {
-            button_pushed = !nrf_gpio_pin_read(BUTTON_0);
+            button_pushed = !nrf_gpio_pin_read(BSP_BUTTON_0);
         }
 
         // Toggle the LEDs.
-        nrf_gpio_pin_clear(LED_0);
-        nrf_gpio_pin_set(LED_1);
+        nrf_gpio_pin_clear(BSP_LED_0);
+        nrf_gpio_pin_set(BSP_LED_1);
 
         LOG_DEBUG("Button pushed.");
 
         while(button_pushed) {
-            button_pushed = !nrf_gpio_pin_read(BUTTON_0);
+            button_pushed = !nrf_gpio_pin_read(BSP_BUTTON_0);
         }
 
         LOG_DEBUG("Button released.");
