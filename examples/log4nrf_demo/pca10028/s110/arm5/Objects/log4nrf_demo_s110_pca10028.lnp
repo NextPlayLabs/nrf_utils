@@ -1,0 +1,21 @@
+--cpu Cortex-M0
+".\objects\main.o"
+".\objects\log4nrf.o"
+".\objects\bsp.o"
+".\objects\arm_startup_nrf51.o"
+".\objects\system_nrf51.o"
+".\objects\ble_srv_common.o"
+".\objects\ble_advdata.o"
+".\objects\ble_conn_params.o"
+".\objects\nrf_delay.o"
+".\objects\simple_uart.o"
+".\objects\app_button.o"
+".\objects\app_error.o"
+".\objects\app_gpiote.o"
+".\objects\app_scheduler.o"
+".\objects\app_timer.o"
+".\objects\nrf_assert.o"
+".\objects\softdevice_handler.o"
+--ro-base 0x00000000 --entry 0x00000000 --rw-base 0x20000000 --entry Reset_Handler --first __Vectors --strict --summary_stderr --info summarysizes --map --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list ".\Listings\log4nrf_demo_s110_pca10028.map" -o .\Objects\log4nrf_demo_s110_pca10028.axf

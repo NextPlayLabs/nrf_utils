@@ -1,0 +1,15 @@
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_BLE\1.1.0\common\ble_srv_common.c
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_BLE\1.1.0\common\ble_srv_common.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\ble_types.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_Libraries\1.1.0\util\app_util.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_DeviceFamilyPack\1.1.4\Device\Include\compiler_abstraction.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\ble_gap.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\ble_ranges.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\nrf_svc.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\ble_gatt.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_Libraries\1.1.0\util\nordic_common.h
+.\objects\ble_srv_common.o: C:\Users\Vengroff\src\nrf_utils\examples\log4nrf_demo\pca10028\s110\arm5\RTE\nRF_Libraries\nRF51422_xxAC\app_error.h
+.\objects\ble_srv_common.o: C:\Keil_v5\ARM\PACK\NordicSemiconductor\nRF_SoftDevice_S110\7.1.0-3\headers\nrf_error.h
