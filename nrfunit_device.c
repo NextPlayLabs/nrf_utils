@@ -22,6 +22,7 @@
 #include "nrfunit.h"
 #include "nrfunit_device.h"
 #include "log4nrf.h"
+#include "bsp.h"
 
 // Support for running nrfunit tests on the NRF51822 device.
 // To use this, call nrf_nrfunit_init() at the beggining
@@ -52,8 +53,8 @@ void nrfunit_device_init() {
     log4nrf_init();
 
     // Configure LED-pins as outputs
-    nrf_gpio_cfg_output(LED_0);
-    nrf_gpio_cfg_output(LED_1);
+    nrf_gpio_cfg_output(BSP_LED_0);
+    nrf_gpio_cfg_output(BSP_LED_1);
 
     // Configure the buttons as inputs.
     nrf_gpio_range_cfg_input(BUTTON_START, BUTTON_STOP, BUTTON_PULL);
@@ -74,8 +75,8 @@ void nrfunit_device_main_loop() {
         // Turn on LED_0 to indicate we are ready
         // to start tests.
 
-        nrf_gpio_pin_clear(LED_1);
-        nrf_gpio_pin_set(LED_0);
+        nrf_gpio_pin_clear(BSP_LED_1);
+        nrf_gpio_pin_set(BSP_LED_0);
 
         // Wait for a button press to start running
         // the test.
@@ -84,19 +85,19 @@ void nrfunit_device_main_loop() {
 
         // Wait for the button to be pushed.
         while(!button_pushed) {
-            button_pushed = !nrf_gpio_pin_read(BUTTON_0);
+            button_pushed = !nrf_gpio_pin_read(BSP_BUTTON_0);
         }
 
         // Both LEDs now on.
-        nrf_gpio_pin_set(LED_1);
+        nrf_gpio_pin_set(BSP_LED_1);
 
         // Wait for it to be released.
         while(button_pushed) {
-            button_pushed = !nrf_gpio_pin_read(BUTTON_0);
+            button_pushed = !nrf_gpio_pin_read(BSP_BUTTON_0);
         }
 
         // Now just one LED.
-        nrf_gpio_pin_clear(LED_0);
+        nrf_gpio_pin_clear(BSP_LED_0);
 
         // Now run the test suite.
 
@@ -132,29 +133,29 @@ void nrfunit_device_main_loop() {
             // as possible.
             while(!button_pushed) {
 
-                button_pushed = nrf_gpio_pin_read(BUTTON_0);
+                button_pushed = nrf_gpio_pin_read(BSP_BUTTON_0);
 
-                nrf_gpio_pin_clear(LED_1);
-                nrf_gpio_pin_set(LED_0);
-
-                nrf_delay_ms(200);
-
-                button_pushed |= nrf_gpio_pin_read(BUTTON_0);
-
-                nrf_gpio_pin_clear(LED_0);
-                nrf_gpio_pin_set(LED_1);
+                nrf_gpio_pin_clear(BSP_LED_1);
+                nrf_gpio_pin_set(BSP_LED_0);
 
                 nrf_delay_ms(200);
 
-                button_pushed |= nrf_gpio_pin_read(BUTTON_0);
+                button_pushed |= nrf_gpio_pin_read(BSP_BUTTON_0);
+
+                nrf_gpio_pin_clear(BSP_LED_0);
+                nrf_gpio_pin_set(BSP_LED_1);
+
+                nrf_delay_ms(200);
+
+                button_pushed |= nrf_gpio_pin_read(BSP_BUTTON_0);
             }
 
-            nrf_gpio_pin_clear(LED_0);
-            nrf_gpio_pin_clear(LED_1);
+            nrf_gpio_pin_clear(BSP_LED_0);
+            nrf_gpio_pin_clear(BSP_LED_1);
 
             // Wait for the button to be released.
             while(button_pushed) {
-                button_pushed = nrf_gpio_pin_read(BUTTON_0);
+                button_pushed = nrf_gpio_pin_read(BSP_BUTTON_0);
             }
         }
     }
