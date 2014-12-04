@@ -33,3 +33,8 @@
 
 # NRF build dir
 _build
+_listings
+
+# Keil files
+*.uvguix.*
+
