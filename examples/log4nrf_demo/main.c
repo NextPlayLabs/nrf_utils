@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "nordic_common.h"
 #include "nrf.h"
 #include "nrf_delay.h"
@@ -21,6 +21,7 @@
 #include "bsp.h"
 
 #include "log4nrf.h"
+
 
 
 void example_init() {
@@ -36,6 +37,7 @@ void example_init() {
 
 int main(int argc, char **argv) {
 
+    // Initialize logging on the board's default UART pins.
     log4nrf_init();
 
     example_init();

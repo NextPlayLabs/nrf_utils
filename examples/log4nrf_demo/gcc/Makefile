@@ -14,15 +14,28 @@
 # limitations under the License.
 #
 
-PROJECT_NAME := log4nrf_demo_s110_pca10028
+# Change this if your SDK is in a differnt place.
+SDK_PATH = /opt/local/nordic/sdk/nRF51_SDK_8.0.0_5fc2c3a
+
+# Change this if your GNU ARM tools are in a different place.
+GNU_INSTALL_ROOT = /opt/local/gcc-arm/gcc-arm-none-eabi-4_9-2014q4
+
+# Chose the log level here.
+CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
+
+DEVICE_VARIANT = xxac
+
+SOFT_DEVICE_VERSION_NUM = 110
+SOFT_DEVICE_VERSION = s$(SOFT_DEVICE_VERSION_NUM)
+
+PROJECT_NAME = log4nrf_demo
 
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 MAKEFILE_NAME := $(MAKEFILE_LIST)
 MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) )
 
-SDK_PATH = ../../../../../../
-TEMPLATE_PATH = $(SDK_PATH)components/toolchain/gcc
+TEMPLATE_PATH = $(SDK_PATH)/components/toolchain/gcc
 ifeq ($(OS),Windows_NT)
 include $(TEMPLATE_PATH)/Makefile.windows
 else
@@ -53,46 +66,51 @@ SIZE    		:= "$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size"
 remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-out $(firstword $1),$1))))
 
 # Our sources
-C_SOURCE_FILES += \
-../main.c \
-../../../log4nrf.c
+C_SOURCE_FILES += ../main.c
+C_SOURCE_FILES += ../../../log4nrf.c
 
 # SDK sources
-C_SOURCE_FILES += \
-$(SDK_PATH)components/libraries/button/app_button.c \
-$(SDK_PATH)components/drivers_nrf/simple_uart/simple_uart.c \
-$(SDK_PATH)components/drivers_nrf/hal/nrf_delay.c \
-$(SDK_PATH)components/toolchain/system_nrf51.c
+C_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c
+C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/hal/nrf_delay.c
+C_SOURCE_FILES += $(SDK_PATH)/components/libraries/button/app_button.c
+C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/uart/app_uart_fifo.c
+C_SOURCE_FILES += $(SDK_PATH)/components/libraries/fifo/app_fifo.c
+C_SOURCE_FILES += $(SDK_PATH)/components/libraries/gpiote/app_gpiote.c
 
 #assembly files common to all targets
-ASM_SOURCE_FILES  = $(SDK_PATH)components/toolchain/gcc/gcc_startup_nrf51.s
+ASM_SOURCE_FILES  = $(SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s
 
 #includes common to all targets
 INC_PATHS  = -I../../..
-INC_PATHS += -I$(SDK_PATH)components/toolchain/gcc
-INC_PATHS += -I$(SDK_PATH)components/toolchain
-INC_PATHS += -I$(SDK_PATH)components/libraries/button
-INC_PATHS += -I$(SDK_PATH)components/libraries/util
-INC_PATHS += -I$(SDK_PATH)components/libraries/scheduler
-INC_PATHS += -I$(SDK_PATH)components/libraries/gpiote
-INC_PATHS += -I$(SDK_PATH)components/libraries/timer
-INC_PATHS += -I$(SDK_PATH)components/softdevice/s110/headers
-INC_PATHS += -I$(SDK_PATH)components/ble/common
-INC_PATHS += -I$(SDK_PATH)components/drivers_nrf/simple_uart
-INC_PATHS += -I$(SDK_PATH)components/drivers_nrf/hal
-INC_PATHS += -I$(SDK_PATH)examples/bsp
+INC_PATHS += -I$(SDK_PATH)/components/device
+INC_PATHS += -I$(SDK_PATH)/components/toolchain
+INC_PATHS += -I$(SDK_PATH)/components/toolchain/gcc
+INC_PATHS += -I$(SDK_PATH)/components/libraries/button
+INC_PATHS += -I$(SDK_PATH)/components/libraries/util
+INC_PATHS += -I$(SDK_PATH)/components/libraries/scheduler
+INC_PATHS += -I$(SDK_PATH)/components/libraries/fifo
+INC_PATHS += -I$(SDK_PATH)/components/libraries/gpiote
+INC_PATHS += -I$(SDK_PATH)/components/libraries/timer
+INC_PATHS += -I$(SDK_PATH)/components/softdevice/$(SOFT_DEVICE_VERSION)/headers
+INC_PATHS += -I$(SDK_PATH)/components/ble/common
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/uart
+INC_PATHS += -I$(SDK_PATH)/components/drivers_nrf/hal
+INC_PATHS += -I$(SDK_PATH)/examples/bsp
 
 OBJECT_DIRECTORY = _build
 LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
 OUTPUT_BINARY_DIRECTORY = $(OBJECT_DIRECTORY)
 
+SOFT_DEVICE_DIR = $(SDK_PATH)/components/softdevice/$(SOFT_DEVICE_VERSION)
+SOFT_DEVICE_HEX = $(SOFT_DEVICE_DIR)/hex/$(SOFT_DEVICE_VERSION)_softdevice.hex
+
 # Sorting removes duplicates
 BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LISTING_DIRECTORY) )
 
 #flags common to all targets
-CFLAGS  = -DNRF51
+CFLAGS += -DNRF51
 CFLAGS += -DBLE_STACK_SUPPORT_REQD
-CFLAGS += -DS110
+CFLAGS += -DS$(SOFT_DEVICE_VERSION_NUM)
 CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -DBOARD_PCA10028
 CFLAGS += -mcpu=cortex-m0
@@ -116,21 +134,21 @@ LDFLAGS += --specs=nano.specs -lc -lnosys
 ASMFLAGS += -x assembler-with-cpp
 ASMFLAGS += -DNRF51
 ASMFLAGS += -DBLE_STACK_SUPPORT_REQD
-ASMFLAGS += -DS110
+ASMFLAGS += -DS$(SOFT_DEVICE_VERSION_NUM)
 ASMFLAGS += -DSOFTDEVICE_PRESENT
 ASMFLAGS += -DBOARD_PCA10028
 #default target - first one defined
-default: clean nrf51422_xxac_s110
+default: clean nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
 
 #building all targets
 all: clean
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e cleanobj
-	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e nrf51422_xxac_s110
+	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
 
 #target for printing all targets
 help:
 	@echo following targets are available:
-	@echo 	nrf51422_xxac_s110
+	@echo 	nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
 
 
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
@@ -146,9 +164,10 @@ vpath %.s $(ASM_PATHS)
 
 OBJECTS = $(C_OBJECTS) $(ASM_OBJECTS)
 
-nrf51422_xxac_s110: OUTPUT_FILENAME := nrf51422_xxac_s110
-nrf51422_xxac_s110: LINKER_SCRIPT=$(SDK_PATH)components/toolchain/gcc/gcc_nrf51_s110_xxac.ld
-nrf51422_xxac_s110: $(BUILD_DIRECTORIES) $(OBJECTS)
+OUTPUT_FILENAME=$(PROJECT_NAME)_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
+LINKER_SCRIPT=gcc_nrf51_$(SOFT_DEVICE_VERSION)_$(DEVICE_VARIANT).ld
+
+nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION): $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
@@ -185,6 +204,8 @@ $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex: $(OUTPUT_BINARY_DIRECTORY)/$(
 	@echo Preparing: $(OUTPUT_FILENAME).hex
 	$(NO_ECHO)$(OBJCOPY) -O ihex $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex
 
+.PHONY: finalize genbin genhex echosize
+
 finalize: genbin genhex echosize
 
 genbin:
@@ -201,15 +222,16 @@ echosize:
 	$(NO_ECHO)$(SIZE) $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	-@echo ""
 
+program: genhex
+	echo Programming $(BOARD)
+	nrfjprog program -v -c $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).hex -s $(SOFT_DEVICE_HEX)
+
+wipe:
+	echo Wiping $(BOARD)
+	nrfjprog wipe -v
+
 clean:
 	$(RM) $(BUILD_DIRECTORIES)
-
-cleanobj:
-	$(RM) $(BUILD_DIRECTORIES)/*.o
-
-flash: $(MAKECMDGOALS)
-	@echo Flashing: $(OUTPUT_BINARY_DIRECTORY)/$<.hex
-	nrfjprog --reset --program $(OUTPUT_BINARY_DIRECTORY)/$<.hex
 
 
 
