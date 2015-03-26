@@ -19,9 +19,6 @@
 #include "nrfunit.h"
 #include "ts_example_another.h"
 
-#define YES 1
-#define NO 0
-
 // This is a test, this is only a test...
 // By convention, there is a function for each
 // test, beginning with test_, that asserts
@@ -41,9 +38,11 @@ static const char *test_example_failure() {
     // fail. You can fix this, but please don't check
     // it in. We want others to learn how the test
     // framework works too.
-    nu_assert_equals("This will fail.", 17, 99);
+    nu_assert_equals("This will fail because 17 is not equal to 99.", 17, 99);
 
     // And we won't get here due to the test failure.
+	  // Depending on your compiler settings you may get
+		// a warning that this code is unreachable.
     return TEST_SUCCEEDED;
 }
 

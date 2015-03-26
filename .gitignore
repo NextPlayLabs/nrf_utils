@@ -32,4 +32,10 @@
 *~
 
 # NRF build dir
+RTE
 _build
+_listings
+
+# Keil files
+*.uvguix.*
+

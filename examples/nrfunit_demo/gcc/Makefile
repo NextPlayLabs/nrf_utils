@@ -54,8 +54,11 @@ remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-ou
 
 # Our sources
 C_SOURCE_FILES += \
-../main.c \
-../../../log4nrf.c
+../host_main.c \
+../all_tests.c \
+../ts_example_basic.c \
+../ts_example_another.c \
+../../../nrfunit_device.c
 
 # SDK sources
 C_SOURCE_FILES += \
