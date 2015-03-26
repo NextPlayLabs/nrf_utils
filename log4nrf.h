@@ -20,6 +20,10 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
+#ifdef NRF51
+#include "app_util_platform.h"
+#endif
+
 // Logger macro API:
 //
 // On the compiler command line. e.g.
@@ -129,10 +133,20 @@
 #include <stdio.h>
 #endif
 
+#ifndef LOG_SOURCE_PRIORITY
+#define LOG_SOURCE_PRIORITY NRF_APP_PRIORITY_THREAD
+#endif
+
 // Macros for all of the different available levels. This enables logging
 // code for all unused levels to be completely eliminated by the preprocessor.
 
-#define __LOG_DO_ACTUAL_LOGGING(level, format, ...) printf("%s:%d: " level ": " format "\r\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define __LOG_DO_ACTUAL_LOGGING(level, format, ...)                                     \
+do {                                                                                    \
+    if(LOG_SOURCE_PRIORITY == current_int_priority_get()) {                             \
+        printf("%s:%d: " level ": " format "\r\n", __FILE__, __LINE__, ##__VA_ARGS__);  \
+    }                                                                                   \
+} while (0)
+
 #define __LOG_NO_ACTUAL_LOGGING do {} while(0)
 
 #if LOG_LEVEL >= LOG_LEVEL_FATAL
@@ -176,7 +190,7 @@
 // Call this function right at the start of your main() to initialize
 // the logging system so that logging is done via the SEGGER JLink.
 // Output is at 38400 baud.
-void log4nrf_init(void);
+void log4nrf_init();
 
 // Use this version if you would like to use specific pins other than
 // the default pins defined in boards.h

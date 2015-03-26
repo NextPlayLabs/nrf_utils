@@ -16,28 +16,62 @@
 
 #include "log4nrf.h"
 
-#include <stdio.h>
-
 #include "nrf_delay.h"
-#include "simple_uart.h"
+#include "app_uart.h"
+#include "app_error.h"
 #include "boards.h"
 
-#ifdef __arm__
-int fputc(int ch, FILE * p_file) 
-{
-    simple_uart_put((uint8_t)ch);
-    return 0;
-}
-#endif /* __arm__ */
+#define UART_TX_BUF_SIZE 128
+#define UART_RX_BUF_SIZE 4
+
+#if LOG_LEVEL > LOG_LEVEL_OFF
+
 
 int _write(int fd, char * str, int len)
 {
-    for (int i = 0; i < len; i++)
-    {
-        simple_uart_put(str[i]);
+    for (int ii = 0; ii < len; ii++) {
+
+        // We could try to do something clever here like
+        // decide if the buffer is almost full and put
+        // ... instead of running out of space and then
+        // break out of the loop.
+
+#if 1
+        // TODO:
+        // The example app uart code in SDK 8 does this
+        // in a while loop like this. Not totally clear
+        // why or what error they are expecting. Should
+        // figure this out.
+
+        unsigned count = 1000;
+
+        while(app_uart_put(str[ii]) != NRF_SUCCESS) {
+            if(!count--) {
+                break;
+            }
+        }
+#else
+        // If no room in the buffer, just move on.
+        app_uart_put(str[ii]);
+#endif
     }
+
     return len;
 }
+
+
+static void uart_event_handle(app_uart_evt_t * p_event) {
+    switch (p_event->evt_type) {
+    case APP_UART_COMMUNICATION_ERROR:
+    case APP_UART_FIFO_ERROR:
+        // TODO - want to do anything for these errors?
+        break;
+    default:
+        // Don't need to handle other events.
+        break;
+    }
+}
+#endif
 
 void log4nrf_init_with_pins(uint8_t rts_pin_number,
                             uint8_t txd_pin_number,
@@ -45,14 +79,30 @@ void log4nrf_init_with_pins(uint8_t rts_pin_number,
                             uint8_t rxd_pin_number,
                             bool hwfc) {
 
-    simple_uart_config(rts_pin_number, txd_pin_number, cts_pin_number, rxd_pin_number, hwfc);
+#if LOG_LEVEL > LOG_LEVEL_OFF
+
+    uint32_t err_code;
+
+    const app_uart_comm_params_t comm_params = {
+        rxd_pin_number,
+        txd_pin_number,
+        rts_pin_number,
+        cts_pin_number,
+        (hwfc ? APP_UART_FLOW_CONTROL_ENABLED : APP_UART_FLOW_CONTROL_DISABLED),
+        false,
+        UART_BAUDRATE_BAUDRATE_Baud38400
+      };
+
+    APP_UART_FIFO_INIT(&comm_params, UART_RX_BUF_SIZE, UART_TX_BUF_SIZE, uart_event_handle, APP_IRQ_PRIORITY_LOW, err_code);
+
+    APP_ERROR_CHECK(err_code);
+
     nrf_delay_ms(100);
 
     LOG_INFO("Logging initialized.");
-
+#endif
 }
 
 void log4nrf_init() {
-
     log4nrf_init_with_pins(RTS_PIN_NUMBER, TX_PIN_NUMBER, CTS_PIN_NUMBER, RX_PIN_NUMBER, HWFC);
 }
