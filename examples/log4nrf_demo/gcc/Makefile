@@ -23,6 +23,9 @@ GNU_INSTALL_ROOT = /opt/local/gcc-arm/gcc-arm-none-eabi-4_9-2014q4
 # Chose the log level here.
 CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
 
+# Send our printfs to the uart.
+CFLAGS += -DWRITE_TO_APP_UART
+
 DEVICE_VARIANT = xxac
 
 SOFT_DEVICE_VERSION_NUM = 110
@@ -68,6 +71,7 @@ remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-ou
 # Our sources
 C_SOURCE_FILES += ../main.c
 C_SOURCE_FILES += ../../../log4nrf.c
+C_SOURCE_FILES += ../../../write_app_uart.c
 
 # SDK sources
 C_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c

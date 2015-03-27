@@ -20,11 +20,8 @@ SDK_PATH = /opt/local/nordic/sdk/nRF51_SDK_8.0.0_5fc2c3a
 # Change this if your GNU ARM tools are in a different place.
 GNU_INSTALL_ROOT = /opt/local/gcc-arm/gcc-arm-none-eabi-4_9-2014q4
 
-# Chose the log level here. Need to set this to
-# something other than LOG_LEVEL_OFF even if your
-# code does not use logging, as this triggers
-# the printf to uart redirection.
-CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
+# Send our printfs to the uart.
+CFLAGS += -DWRITE_TO_APP_UART
 
 DEVICE_VARIANT = xxac
 
@@ -74,7 +71,7 @@ C_SOURCE_FILES += ../all_tests.c
 C_SOURCE_FILES += ../ts_example_basic.c
 C_SOURCE_FILES += ../ts_example_another.c
 C_SOURCE_FILES += ../../../nrfunit_device.c
-C_SOURCE_FILES += ../../../log4nrf.c
+C_SOURCE_FILES += ../../../write_app_uart.c
 
 # SDK sources
 C_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c
