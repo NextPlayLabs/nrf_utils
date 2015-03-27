@@ -21,8 +21,8 @@
 #include "boards.h"
 #include "nrfunit.h"
 #include "nrfunit_device.h"
-#include "log4nrf.h"
 #include "bsp.h"
+#include "write_app_uart.h"
 
 // Support for running nrfunit tests on the NRF51822 device.
 // To use this, call nrf_nrfunit_init() at the beggining
@@ -50,14 +50,15 @@ unsigned asserts_failed;
 
 void nrfunit_device_init() {
 
-    log4nrf_init();
-
     // Configure LED-pins as outputs
     nrf_gpio_cfg_output(BSP_LED_0);
     nrf_gpio_cfg_output(BSP_LED_1);
 
     // Configure the buttons as inputs.
     nrf_gpio_range_cfg_input(BUTTON_START, BUTTON_STOP, BUTTON_PULL);
+
+    // Configure the UART using the default pins for the board.
+    write_app_uart_init_with_pins(RTS_PIN_NUMBER, TX_PIN_NUMBER, CTS_PIN_NUMBER, RX_PIN_NUMBER, HWFC);
 }
 
 
@@ -118,7 +119,7 @@ void nrfunit_device_main_loop() {
             printf("ALL TESTS PASSED\n\r");
         }
 
-        printf("%u asserts run in %u tests and %u test suites.\n\r", asserts_run, tests_run, test_suites_run);
+        printf("%u asserts run in %u tests and %u test suites.\n\r\n\r", asserts_run, tests_run, test_suites_run);
 #endif
 
         if(asserts_failed || result != 0) {
