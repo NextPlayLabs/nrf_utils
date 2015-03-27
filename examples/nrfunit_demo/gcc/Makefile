@@ -20,7 +20,11 @@ SDK_PATH = /opt/local/nordic/sdk/nRF51_SDK_8.0.0_5fc2c3a
 # Change this if your GNU ARM tools are in a different place.
 GNU_INSTALL_ROOT = /opt/local/gcc-arm/gcc-arm-none-eabi-4_9-2014q4
 
-
+# Chose the log level here. Need to set this to
+# something other than LOG_LEVEL_OFF even if your
+# code does not use logging, as this triggers
+# the printf to uart redirection.
+CFLAGS += -DLOG_LEVEL=LOG_LEVEL_DEBUG
 
 DEVICE_VARIANT = xxac
 
@@ -65,12 +69,12 @@ SIZE    		:= "$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size"
 remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-out $(firstword $1),$1))))
 
 # Our sources
-C_SOURCE_FILES += \
-../host_main.c \
-../all_tests.c \
-../ts_example_basic.c \
-../ts_example_another.c \
-../../../nrfunit_device.c
+C_SOURCE_FILES += ../device_main.c
+C_SOURCE_FILES += ../all_tests.c
+C_SOURCE_FILES += ../ts_example_basic.c
+C_SOURCE_FILES += ../ts_example_another.c
+C_SOURCE_FILES += ../../../nrfunit_device.c
+C_SOURCE_FILES += ../../../log4nrf.c
 
 # SDK sources
 C_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c
@@ -78,6 +82,7 @@ C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/hal/nrf_delay.c
 C_SOURCE_FILES += $(SDK_PATH)/components/libraries/button/app_button.c
 C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/uart/app_uart_fifo.c
 C_SOURCE_FILES += $(SDK_PATH)/components/libraries/fifo/app_fifo.c
+C_SOURCE_FILES += $(SDK_PATH)/components/libraries/gpiote/app_gpiote.c
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s
@@ -110,7 +115,7 @@ SOFT_DEVICE_HEX = $(SOFT_DEVICE_DIR)/hex/$(SOFT_DEVICE_VERSION)_softdevice.hex
 BUILD_DIRECTORIES := $(sort $(OBJECT_DIRECTORY) $(OUTPUT_BINARY_DIRECTORY) $(LISTING_DIRECTORY) )
 
 #flags common to all targets
-CFLAGS  = -DNRF51
+CFLAGS += -DNRF51
 CFLAGS += -DBLE_STACK_SUPPORT_REQD
 CFLAGS += -DS$(SOFT_DEVICE_VERSION_NUM)
 CFLAGS += -DSOFTDEVICE_PRESENT
