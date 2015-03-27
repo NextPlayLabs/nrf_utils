@@ -42,7 +42,7 @@ else
 include $(TEMPLATE_PATH)/Makefile.posix
 endif
 
-MK := mkdir
+MK := mkdir -p
 RM := rm -rf
 
 #echo suspend
@@ -66,20 +66,23 @@ SIZE    		:= "$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size"
 remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-out $(firstword $1),$1))))
 
 # Our sources
-C_SOURCE_FILES += ../device_main.c
 C_SOURCE_FILES += ../all_tests.c
 C_SOURCE_FILES += ../ts_example_basic.c
 C_SOURCE_FILES += ../ts_example_another.c
-C_SOURCE_FILES += ../../../nrfunit_device.c
-C_SOURCE_FILES += ../../../write_app_uart.c
+
+DEVICE_SOURCE_FILES += ../device_main.c
+DEVICE_SOURCE_FILES += ../../../nrfunit_device.c
+DEVICE_SOURCE_FILES += ../../../write_app_uart.c
+
+LOCAL_SOURCE_FILES += ../host_main.c
 
 # SDK sources
-C_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c
-C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/hal/nrf_delay.c
-C_SOURCE_FILES += $(SDK_PATH)/components/libraries/button/app_button.c
-C_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/uart/app_uart_fifo.c
-C_SOURCE_FILES += $(SDK_PATH)/components/libraries/fifo/app_fifo.c
-C_SOURCE_FILES += $(SDK_PATH)/components/libraries/gpiote/app_gpiote.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/toolchain/system_nrf51.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/hal/nrf_delay.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/libraries/button/app_button.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/drivers_nrf/uart/app_uart_fifo.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/libraries/fifo/app_fifo.c
+SDK_SOURCE_FILES += $(SDK_PATH)/components/libraries/gpiote/app_gpiote.c
 
 #assembly files common to all targets
 ASM_SOURCE_FILES  = $(SDK_PATH)/components/toolchain/gcc/gcc_startup_nrf51.s
@@ -154,26 +157,35 @@ help:
 	@echo following targets are available:
 	@echo 	nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
 
-
 C_SOURCE_FILE_NAMES = $(notdir $(C_SOURCE_FILES))
 C_PATHS = $(call remduplicates, $(dir $(C_SOURCE_FILES) ) )
 C_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(C_SOURCE_FILE_NAMES:.c=.o) )
+
+SDK_SOURCE_FILE_NAMES = $(notdir $(SDK_SOURCE_FILES))
+SDK_PATHS = $(call remduplicates, $(dir $(SDK_SOURCE_FILES) ) )
+SDK_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(SDK_SOURCE_FILE_NAMES:.c=.o) )
+
+DEVICE_SOURCE_FILE_NAMES = $(notdir $(DEVICE_SOURCE_FILES))
+DEVICE_PATHS = $(call remduplicates, $(dir $(DEVICE_SOURCE_FILES) ) )
+DEVICE_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(DEVICE_SOURCE_FILE_NAMES:.c=.o) )
 
 ASM_SOURCE_FILE_NAMES = $(notdir $(ASM_SOURCE_FILES))
 ASM_PATHS = $(call remduplicates, $(dir $(ASM_SOURCE_FILES) ))
 ASM_OBJECTS = $(addprefix $(OBJECT_DIRECTORY)/, $(ASM_SOURCE_FILE_NAMES:.s=.o) )
 
-vpath %.c $(C_PATHS)
+vpath %.c $(call remduplicates, $(C_PATHS) $(SDK_PATHS) $(DEVICE_PATHS) $(LOCAL_PATHS))
 vpath %.s $(ASM_PATHS)
 
-OBJECTS = $(C_OBJECTS) $(ASM_OBJECTS)
+NRF_OBJECTS = $(C_OBJECTS) $(SDK_OBJECTS) $(ASM_OBJECTS) $(DEVICE_OBJECTS)
+
+HOST_OBJECTS = $(C_OBJECTS) $(LOCAL_OBJECTS)
 
 OUTPUT_FILENAME=$(PROJECT_NAME)_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION)
 LINKER_SCRIPT=gcc_nrf51_$(SOFT_DEVICE_VERSION)_$(DEVICE_VARIANT).ld
 
-nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION): $(BUILD_DIRECTORIES) $(OBJECTS)
+nrf51422_$(DEVICE_VARIANT)_$(SOFT_DEVICE_VERSION): $(BUILD_DIRECTORIES) $(NRF_OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CC) $(LDFLAGS) $(NRF_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(MAKE) -f $(MAKEFILE_NAME) -C $(MAKEFILE_DIR) -e finalize
 
 ## Create build directories
@@ -193,9 +205,9 @@ $(OBJECT_DIRECTORY)/%.o: %.s
 
 
 # Link
-$(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out: $(BUILD_DIRECTORIES) $(OBJECTS)
+$(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out: $(BUILD_DIRECTORIES) $(NRF_OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
-	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
+	$(NO_ECHO)$(CC) $(LDFLAGS) $(NRF_OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
 
 
 ## Create binary .bin file from the .out file
@@ -236,6 +248,50 @@ wipe:
 
 clean:
 	$(RM) $(BUILD_DIRECTORIES)
+
+
+.PHONY: host_tests host_dirs
+
+HOST_CC = gcc
+HOST_CFLAGS = -std=c99 -g -Wall -Werror -I../../..
+HOST_CPPFLAGS = -I./test -I. -I$(NPL_EMBED_SDK_ROOT) -I$(NRFUTILS_DIR) -DHOST_TESTING -DNRFUNIT_CONTINUE_ON_FAILURE
+
+HOST_OBJDIR = $(OUTPUT_BINARY_DIRECTORY)/test-host/obj
+HOST_BINDIR = $(OUTPUT_BINARY_DIRECTORY)/test-host/bin
+
+LOCAL_SOURCE_FILE_NAMES = $(notdir $(LOCAL_SOURCE_FILES)) $(notdir $(C_SOURCE_FILES))
+LOCAL_PATHS = $(call remduplicates, $(dir $(LOCAL_SOURCE_FILES) ) $(dir $(C_SOURCE_FILES) ) )
+LOCAL_OBJECTS = $(addprefix $(HOST_OBJDIR)/, $(LOCAL_SOURCE_FILE_NAMES:.c=.o) )
+
+HOST_TESTOBJS = $(LOCAL_OBJECTS)
+
+HOST_TEST_BIN_NAME = host_$(PROJECT_NAME)
+HOST_TEST_BIN = $(HOST_BINDIR)/$(HOST_TEST_BIN_NAME)
+
+HOST_LDLIBS += -lm
+
+HOST_COMPILE.c = $(HOST_CC) $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(HOST_TARGET_ARCH) -c
+HOST_LINK.c    = $(HOST_CC) $(HOST_CFLAGS) $(HOST_CPPFLAGS) $(HOST_LDFLAGS) $(HOST_TARGET_ARCH)
+
+$(HOST_OBJDIR)/%.o: %.c
+	@echo "HOST COMPILE " $@
+	$Q$(HOST_COMPILE.c) $(OUTPUT_OPTION) $<
+
+host_dirs: $(HOST_BINDIR) $(HOST_OBJDIR)
+
+$(HOST_OBJDIR):
+	$(MK) $@
+
+$(HOST_BINDIR):
+	$(MK) $@
+
+host_tests: host_dirs $(HOST_TEST_BIN)
+
+$(HOST_TESTOBJS):$(HOST_OBJDIR)
+
+$(HOST_TEST_BIN):$(HOST_TESTOBJS)
+	@echo "LINK    " $@
+	$Q$(HOST_LINK.c) $(HOST_TESTOBJS) $(HOST_LDLIBS) $(OUTPUT_OPTION)
 
 
 
