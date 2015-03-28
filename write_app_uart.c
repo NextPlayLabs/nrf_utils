@@ -105,5 +105,7 @@ uint32_t write_app_uart_init_with_pins(uint8_t rts_pin_number,
     nrf_delay_ms(100);
 
     return err_code;
+#else		
+		return NRF_SUCCESS;
 #endif
 }
